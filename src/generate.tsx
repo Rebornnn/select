@@ -58,6 +58,7 @@ const DEFAULT_OMIT_PROPS = [
   'choiceTransitionName',
   'onInputKeyDown',
   'tabIndex',
+  'multipleIcon'
 ];
 
 export interface RefSelectProps {
@@ -136,6 +137,7 @@ export interface SelectProps<OptionsType extends object[], ValueType> extends Re
   autoFocus?: boolean;
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
+  multipleIcon?: React.ComponentType;
   selectAllText?: React.ReactNode;
   placeholder?: React.ReactNode;
   backfill?: boolean;
@@ -298,6 +300,7 @@ export default function generateSelector<
       defaultActiveFirstOption,
       notFoundContent = 'Not Found',
       selectAllText = 'All',
+      multipleIcon,
       optionLabelProp,
       backfill,
       tabIndex,
@@ -987,6 +990,7 @@ export default function generateSelector<
         defaultActiveFirstOption={mergedDefaultActiveFirstOption}
         notFoundContent={notFoundContent}
         selectAllText={selectAllText}
+        multipleIcon={multipleIcon}
         onScroll={onPopupScroll}
         searchValue={mergedSearchValue}
         menuItemSelectedIcon={menuItemSelectedIcon}

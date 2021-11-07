@@ -4,7 +4,7 @@ import Select, { Option } from '../src';
 import '../assets/index.less';
 
 const children = [];
-for (let i = 10; i < 36; i += 1) {
+for (let i = 10; i < 13; i += 1) {
   children.push(
     <Option key={i.toString(36) + i} disabled={i === 10} title={`中文${i}`}>
       中文{i}
@@ -80,7 +80,7 @@ class Test extends React.Component {
         <div style={{ width: 300 }}>
           <Select
             autoFocus
-            value={value}
+            // value={value}
             animation={useAnim ? 'slide-up' : null}
             choiceTransitionName="rc-select-selection__choice-zoom"
             style={{ width: 500 }}
@@ -97,6 +97,10 @@ class Test extends React.Component {
             onFocus={() => console.log('focus')}
             onBlur={v => console.log('blur', v)}
             tokenSeparators={[' ', ',']}
+            selectAllText='全部'
+            multipleIcon={({checked,indeterminate,children, onChange}:any) => {
+              return <div onClick={onChange}>{checked ?  'y' : indeterminate ? 'p': 'w'}{children}</div>
+            }}
           >
             {children}
           </Select>

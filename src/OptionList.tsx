@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useEffect, useCallback } from 'react';
-import Checkbox from 'rc-checkbox';
 import KeyCode from 'rc-util/lib/KeyCode';
 import omit from 'rc-util/lib/omit';
 import pickAttrs from 'rc-util/lib/pickAttrs';
@@ -35,6 +34,7 @@ export interface OptionListProps<OptionsType extends object[]> {
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
   selectAllText?: React.ReactNode;
+  multipleIcon?: React.ComponentType;
   menuItemSelectedIcon?: RenderNode;
   childrenAsData: boolean;
   searchValue: string;
@@ -79,6 +79,7 @@ const OptionList: React.ForwardRefRenderFunction<
     itemHeight,
     notFoundContent,
     selectAllText,
+    multipleIcon,
     open,
     menuItemSelectedIcon,
     virtual,
@@ -255,6 +256,7 @@ const OptionList: React.ForwardRefRenderFunction<
   }));
 
   // ========================== Render ==========================
+  const MultipleIcon = multipleIcon as any;
   if (memoFlattenOptions.length === 0) {
     return (
       <div
@@ -292,12 +294,36 @@ const OptionList: React.ForwardRefRenderFunction<
     ) : null;
   };
 
+  // 全选按钮状态
+  const getCheckStatus = () => {
+    if (values.size === 0) {
+      return 'none';
+    }
+
+    if (values.size === memoFlattenOptions.filter((item) => !item.data.disabled).length) {
+      return 'all';
+    }
+
+    return 'part';
+  };
+
+
+  // 全选
+  const onSelectAll = () => {
+
+  }
+
   return (
     <>
-      {multiple && (
+      {multiple && multipleIcon && (
         <div className={`${itemPrefixCls}-all`}>
-          <Checkbox />
-          {selectAllText}
+          <MultipleIcon
+            checked={getCheckStatus() === 'all'}
+            indeterminate={getCheckStatus() === 'part'}
+            onChange={onSelectAll}
+          >
+            {selectAllText}
+          </MultipleIcon>
         </div>
       )}
 
@@ -389,9 +415,9 @@ const OptionList: React.ForwardRefRenderFunction<
               }}
               style={style}
             >
-              {multiple && (
+              {multiple && multipleIcon && (
                 <span className={`${itemPrefixCls}-option-state-multiple`}>
-                  <Checkbox checked={selected} />
+                  <MultipleIcon checked={selected} />
                 </span>
               )}
               <div id={`content-${itemIndex}`} className={`${optionPrefixCls}-content`}>
