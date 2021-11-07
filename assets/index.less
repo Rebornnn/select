@@ -223,6 +223,8 @@
 
     // >>> Option
     &-option {
+      display: flex;
+      align-items: center;
       position: relative;
 
       &-grouped {
@@ -234,6 +236,10 @@
         right: 0;
         top: 4px;
         pointer-events: none;
+      }
+
+      .@{select-prefix}-item-option-content-bold {
+        font-weight: bold;
       }
 
       // ------- Active -------

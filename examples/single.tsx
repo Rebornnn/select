@@ -10,7 +10,7 @@ class Test extends React.Component {
     value: '9',
   };
 
-  onChange = e => {
+  onChange = (e) => {
     let value;
     if (e && e.target) {
       ({ value } = e.target);
@@ -29,7 +29,7 @@ class Test extends React.Component {
     });
   };
 
-  onBlur = v => {
+  onBlur = (v) => {
     console.log('onBlur', v);
   };
 
@@ -37,7 +37,7 @@ class Test extends React.Component {
     console.log('onFocus');
   };
 
-  onSearch = val => {
+  onSearch = (val) => {
     console.log('Search:', val);
   };
 
@@ -51,7 +51,7 @@ class Test extends React.Component {
       <div style={{ margin: 20 }}>
         <div
           style={{ height: 150, background: 'rgba(0, 255, 0, 0.1)' }}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             e.preventDefault();
           }}
         >
@@ -102,14 +102,14 @@ class Test extends React.Component {
             >
               yiminghe
             </Option>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
               <Option key={i} value={String(i)} text={String(i)}>
                 {i}-text
               </Option>
             ))}
           </Select>
         </div>
-        <h2>native select</h2>
+        {/* <h2>native select</h2>
         <select value={value} style={{ width: 500 }} onChange={this.onChange}>
           <option value="01">jack</option>
           <option value="11">lucy</option>
@@ -117,27 +117,40 @@ class Test extends React.Component {
             disabled
           </option>
           <option value="31">yiminghe</option>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
             <option value={i} key={i}>
               {i}
             </option>
           ))}
-        </select>
+        </select> */}
 
         <h2>RTL Select</h2>
 
         <div style={{ width: 300 }}>
-          <Select
+          {/* <Select
             id="my-select-rtl"
-            placeholder="rtl"
-            direction="rtl"
+            // placeholder="rtl"
+            // direction="rtl"
             dropdownMatchSelectWidth={300}
             dropdownStyle={{ minWidth: 300 }}
             style={{ width: 500 }}
-          >
-            <Option value="1">1</Option>
-            <Option value="2">2</Option>
-          </Select>
+            options={[
+              { value: 1, label: <>{a}-list</> },
+              {
+                value: 2,
+                label: (
+                  <b
+                    style={{
+                      color: 'yellow',
+                    }}
+                  >
+                    <strong>rose</strong>
+                    jsck
+                  </b>
+                ),
+              },
+            ]}
+          /> */}
         </div>
 
         <p>

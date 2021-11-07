@@ -136,6 +136,7 @@ export interface SelectProps<OptionsType extends object[], ValueType> extends Re
   autoFocus?: boolean;
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
+  selectAllText?: React.ReactNode;
   placeholder?: React.ReactNode;
   backfill?: boolean;
   /** @private Internal usage. Do not use in your production. */
@@ -296,6 +297,7 @@ export default function generateSelector<
       loading,
       defaultActiveFirstOption,
       notFoundContent = 'Not Found',
+      selectAllText = 'All',
       optionLabelProp,
       backfill,
       tabIndex,
@@ -984,6 +986,7 @@ export default function generateSelector<
         onActiveValue={onActiveValue}
         defaultActiveFirstOption={mergedDefaultActiveFirstOption}
         notFoundContent={notFoundContent}
+        selectAllText={selectAllText}
         onScroll={onPopupScroll}
         searchValue={mergedSearchValue}
         menuItemSelectedIcon={menuItemSelectedIcon}

@@ -46,6 +46,7 @@
   "dependencies": {
     "@babel/runtime": "^7.10.1",
     "classnames": "2.x",
+    "rc-checkbox": "^2.3.2",
     "rc-motion": "^2.0.1",
     "rc-overflow": "^1.0.0",
     "rc-trigger": "^5.0.4",

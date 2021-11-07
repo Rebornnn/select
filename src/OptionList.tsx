@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
+import Checkbox from 'rc-checkbox';
 import KeyCode from 'rc-util/lib/KeyCode';
 import omit from 'rc-util/lib/omit';
 import pickAttrs from 'rc-util/lib/pickAttrs';
@@ -33,6 +34,7 @@ export interface OptionListProps<OptionsType extends object[]> {
   open: boolean;
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
+  selectAllText?: React.ReactNode;
   menuItemSelectedIcon?: RenderNode;
   childrenAsData: boolean;
   searchValue: string;
@@ -76,6 +78,7 @@ const OptionList: React.ForwardRefRenderFunction<
     height,
     itemHeight,
     notFoundContent,
+    selectAllText,
     open,
     menuItemSelectedIcon,
     virtual,
@@ -291,6 +294,13 @@ const OptionList: React.ForwardRefRenderFunction<
 
   return (
     <>
+      {multiple && (
+        <div className={`${itemPrefixCls}-all`}>
+          <Checkbox />
+          {selectAllText}
+        </div>
+      )}
+
       <div role="listbox" id={`${id}_list`} style={{ height: 0, width: 0, overflow: 'hidden' }}>
         {renderItem(activeIndex - 1)}
         {renderItem(activeIndex)}
@@ -310,6 +320,7 @@ const OptionList: React.ForwardRefRenderFunction<
       >
         {({ group, groupOption, data, label, value }, itemIndex) => {
           const { key } = data;
+          const node = document.getElementById(`content-${itemIndex}`);
 
           // Group
           if (group) {
@@ -349,6 +360,16 @@ const OptionList: React.ForwardRefRenderFunction<
             optionTitle = title;
           }
 
+          // 搜索词突出
+          if (searchValue && node) {
+            const reg = new RegExp(searchValue, 'gi');
+            const strings = node.innerText.replace(
+              reg,
+              `<span class='${optionPrefixCls}-content-bold'>$&</span>`,
+            );
+            node.innerHTML = strings;
+          }
+
           return (
             <div
               {...passedProps}
@@ -368,9 +389,16 @@ const OptionList: React.ForwardRefRenderFunction<
               }}
               style={style}
             >
-              <div className={`${optionPrefixCls}-content`}>{content}</div>
+              {multiple && (
+                <span className={`${itemPrefixCls}-option-state-multiple`}>
+                  <Checkbox checked={selected} />
+                </span>
+              )}
+              <div id={`content-${itemIndex}`} className={`${optionPrefixCls}-content`}>
+                {content}
+              </div>
               {React.isValidElement(menuItemSelectedIcon) || selected}
-              {iconVisible && (
+              {!multiple && iconVisible && (
                 <TransBtn
                   className={`${itemPrefixCls}-option-state`}
                   customizeIcon={menuItemSelectedIcon}

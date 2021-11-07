@@ -21,13 +21,13 @@ const Test = () => {
           showSearch
         >
           <Option value="张三" desc="张三 zhang san">
-            张三
+            a张三
           </Option>
           <Option value="李四" desc="李四 li si">
-            李四
+            b李四
           </Option>
           <Option value="王五" desc="王五 wang wu">
-            王五
+            c王五
           </Option>
         </Select>
       </div>
