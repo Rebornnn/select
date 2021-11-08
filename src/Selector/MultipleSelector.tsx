@@ -203,7 +203,8 @@ const SelectSelector: React.FC<SelectorProps> = (props) => {
         disabled={disabled}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
-        editable={inputEditable}
+        // editable={inputEditable}
+        editable={true}
         accessibilityIndex={accessibilityIndex}
         value={inputValue}
         onKeyDown={onInputKeyDown}

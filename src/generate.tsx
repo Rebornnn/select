@@ -1094,8 +1094,11 @@ export default function generateSelector<
 
     // 聚焦时撑开选择器，失焦时还原高度
     const memoMaxTagCount = useMemo(() => {
-      if (props.maxTagCount === 'responsive') {
+      if (props.maxTagCount === 'responsive' && isMultiple) {
         if (mockFocused) {
+          setTimeout(() => {
+            document.getElementById(mergedId).focus();
+          });
           return null;
         } else {
           return 'responsive';
@@ -1103,7 +1106,7 @@ export default function generateSelector<
       }
 
       return props.maxTagCount;
-    }, [props.maxTagCount, mockFocused]);
+    }, [props.maxTagCount, mockFocused, isMultiple]);
 
     const selectorNode = (
       <SelectTrigger

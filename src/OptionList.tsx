@@ -19,7 +19,7 @@ import type {
 import type { RawValueType, FlattenOptionsType } from './interface/generator';
 import { fillFieldNames } from './utils/valueUtil';
 import { isPlatformMac } from './utils/platformUtil';
-import { highlightSearch } from './utils/commonUtil';
+import { getUUID, highlightSearch } from './utils/commonUtil';
 
 const SELECT_ALL_KEY = '_RC_SELECT_ALL_0';
 export interface OptionListProps<OptionsType extends object[]> {
@@ -95,7 +95,7 @@ const OptionList: React.ForwardRefRenderFunction<
   },
   ref,
 ) => {
-  const randomRef = React.useRef(Math.random());
+  const uuidRef = React.useRef(getUUID());
   const itemPrefixCls = `${prefixCls}-item`;
 
   const memoFlattenOptions = useMemo(
@@ -402,7 +402,7 @@ const OptionList: React.ForwardRefRenderFunction<
           // 搜索词突出
           requestAnimationFrame(() => {
             highlightSearch(
-              `content-${itemIndex}-${randomRef.current}`,
+              `content-${itemIndex}-${uuidRef.current}`,
               searchValue,
               optionPrefixCls,
             );
@@ -433,7 +433,7 @@ const OptionList: React.ForwardRefRenderFunction<
                 </span>
               )}
               <div
-                id={`content-${itemIndex}-${randomRef.current}`}
+                id={`content-${itemIndex}-${uuidRef.current}`}
                 className={`${optionPrefixCls}-content`}
               >
                 {content}
