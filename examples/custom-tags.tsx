@@ -52,9 +52,10 @@ const Test: React.FC = () => {
         <Select
           placeholder="placeholder"
           mode="tags"
-          style={{ width: 500 }}
+          style={{ width: 200 }}
           disabled={disabled}
-          maxTagCount={maxTagCount}
+          // maxTagCount={maxTagCount}
+          maxTagCount="responsive"
           maxTagTextLength={10}
           value={value}
           onChange={(val: string[], option) => {

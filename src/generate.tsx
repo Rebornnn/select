@@ -58,7 +58,7 @@ const DEFAULT_OMIT_PROPS = [
   'choiceTransitionName',
   'onInputKeyDown',
   'tabIndex',
-  'multipleIcon'
+  'multipleIcon',
 ];
 
 export interface RefSelectProps {
@@ -137,7 +137,7 @@ export interface SelectProps<OptionsType extends object[], ValueType> extends Re
   autoFocus?: boolean;
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
-  multipleIcon?: React.ComponentType;
+  selectAllIcon?: React.ComponentType;
   selectAllText?: React.ReactNode;
   placeholder?: React.ReactNode;
   backfill?: boolean;
@@ -300,7 +300,7 @@ export default function generateSelector<
       defaultActiveFirstOption,
       notFoundContent = 'Not Found',
       selectAllText = 'All',
-      multipleIcon,
+      selectAllIcon,
       optionLabelProp,
       backfill,
       tabIndex,
@@ -607,6 +607,27 @@ export default function generateSelector<
       }
 
       setMergedValue(outValue);
+    };
+
+    // 选择全部
+    const onInternalSelectAll = (
+      newValues: RawValueType[],
+      { selected }: { selected: boolean },
+    ) => {
+      if (disabled) {
+        return;
+      }
+
+      const newRawValue: Set<RawValueType> = new Set(mergedRawValue);
+      if (selected) {
+        newValues.forEach((v) => newRawValue.add(v));
+      } else {
+        newValues.forEach((v) => newRawValue.delete(v));
+      }
+
+      triggerChange(Array.from(newRawValue));
+      setInnerSearchValue('');
+      setActiveValue('');
     };
 
     const onInternalSelect = (
@@ -985,12 +1006,13 @@ export default function generateSelector<
         height={listHeight}
         itemHeight={listItemHeight}
         onSelect={onInternalOptionSelect}
+        onSelectAll={onInternalSelectAll}
         onToggleOpen={onToggleOpen}
         onActiveValue={onActiveValue}
         defaultActiveFirstOption={mergedDefaultActiveFirstOption}
         notFoundContent={notFoundContent}
         selectAllText={selectAllText}
-        multipleIcon={multipleIcon}
+        selectAllIcon={selectAllIcon}
         onScroll={onPopupScroll}
         searchValue={mergedSearchValue}
         menuItemSelectedIcon={menuItemSelectedIcon}
@@ -1070,6 +1092,19 @@ export default function generateSelector<
       [`${prefixCls}-show-search`]: mergedShowSearch,
     });
 
+    // 聚焦时撑开选择器，失焦时还原高度
+    const memoMaxTagCount = useMemo(() => {
+      if (props.maxTagCount === 'responsive') {
+        if (mockFocused) {
+          return null;
+        } else {
+          return 'responsive';
+        }
+      }
+
+      return props.maxTagCount;
+    }, [props.maxTagCount, mockFocused]);
+
     const selectorNode = (
       <SelectTrigger
         ref={triggerRef}
@@ -1118,6 +1153,7 @@ export default function generateSelector<
             onSearchSubmit={onSearchSubmit}
             onSelect={onInternalSelectionSelect}
             tokenWithEnter={tokenWithEnter}
+            maxTagCount={memoMaxTagCount}
           />
         )}
       </SelectTrigger>

@@ -22,32 +22,32 @@ class Test extends React.Component {
 
   onChange = (value, options) => {
     console.log('onChange', value, options);
-    this.setState({
-      value,
-    });
+    // this.setState({
+    //   value,
+    // });
   };
 
   onSelect = (...args) => {
-    console.log(args);
+    console.log('onSelect', args);
   };
 
   onDeselect = (...args) => {
     console.log(args);
   };
 
-  useAnim = e => {
+  useAnim = (e) => {
     this.setState({
       useAnim: e.target.checked,
     });
   };
 
-  showArrow = e => {
+  showArrow = (e) => {
     this.setState({
       showArrow: e.target.checked,
     });
   };
 
-  loading = e => {
+  loading = (e) => {
     this.setState({
       loading: e.target.checked,
     });
@@ -95,11 +95,16 @@ class Test extends React.Component {
             placeholder="please select"
             onChange={this.onChange}
             onFocus={() => console.log('focus')}
-            onBlur={v => console.log('blur', v)}
+            onBlur={(v) => console.log('blur', v)}
             tokenSeparators={[' ', ',']}
-            selectAllText='全部'
-            multipleIcon={({checked,indeterminate,children, onChange}:any) => {
-              return <div onClick={onChange}>{checked ?  'y' : indeterminate ? 'p': 'w'}{children}</div>
+            selectAllText="全部"
+            selectAllIcon={({ checked, indeterminate, children }: any) => {
+              return (
+                <div>
+                  {checked ? 'y' : indeterminate ? 'p' : 'w'}
+                  {children}
+                </div>
+              );
             }}
           >
             {children}

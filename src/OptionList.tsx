@@ -19,7 +19,9 @@ import type {
 import type { RawValueType, FlattenOptionsType } from './interface/generator';
 import { fillFieldNames } from './utils/valueUtil';
 import { isPlatformMac } from './utils/platformUtil';
+import { highlightSearch } from './utils/commonUtil';
 
+const SELECT_ALL_KEY = '_RC_SELECT_ALL_0';
 export interface OptionListProps<OptionsType extends object[]> {
   prefixCls: string;
   id: string;
@@ -34,7 +36,7 @@ export interface OptionListProps<OptionsType extends object[]> {
   defaultActiveFirstOption?: boolean;
   notFoundContent?: React.ReactNode;
   selectAllText?: React.ReactNode;
-  multipleIcon?: React.ComponentType;
+  selectAllIcon?: React.ComponentType;
   menuItemSelectedIcon?: RenderNode;
   childrenAsData: boolean;
   searchValue: string;
@@ -42,6 +44,7 @@ export interface OptionListProps<OptionsType extends object[]> {
   direction?: 'ltr' | 'rtl';
 
   onSelect: (value: RawValueType, option: { selected: boolean }) => void;
+  onSelectAll: (values: RawValueType[], option: { selected: boolean }) => void;
   onToggleOpen: (open?: boolean) => void;
   /** Tell Select that some value is now active to make accessibility work */
   onActiveValue: OnActiveValue;
@@ -79,11 +82,12 @@ const OptionList: React.ForwardRefRenderFunction<
     itemHeight,
     notFoundContent,
     selectAllText,
-    multipleIcon,
+    selectAllIcon,
     open,
     menuItemSelectedIcon,
     virtual,
     onSelect,
+    onSelectAll,
     onToggleOpen,
     onActiveValue,
     onScroll,
@@ -91,6 +95,7 @@ const OptionList: React.ForwardRefRenderFunction<
   },
   ref,
 ) => {
+  const randomRef = React.useRef(Math.random());
   const itemPrefixCls = `${prefixCls}-item`;
 
   const memoFlattenOptions = useMemo(
@@ -190,6 +195,16 @@ const OptionList: React.ForwardRefRenderFunction<
     }
   };
 
+  // 全选
+  const onSelectValueAll = () => {
+    const newValues = memoFlattenOptions
+      .filter((v) => v.value && !v.data.disabled)
+      .map((item) => item.value);
+    if (newValues && newValues.length) {
+      onSelectAll(newValues, { selected: getCheckStatus() !== 'all' });
+    }
+  };
+
   // ========================= Keyboard =========================
   React.useImperativeHandle(ref, () => ({
     onKeyDown: (event) => {
@@ -256,7 +271,7 @@ const OptionList: React.ForwardRefRenderFunction<
   }));
 
   // ========================== Render ==========================
-  const MultipleIcon = multipleIcon as any;
+  const SelectAllIcon = selectAllIcon as any;
   if (memoFlattenOptions.length === 0) {
     return (
       <div
@@ -307,31 +322,30 @@ const OptionList: React.ForwardRefRenderFunction<
     return 'part';
   };
 
-
-  // 全选
-  const onSelectAll = () => {
-
-  }
-
   return (
     <>
-      {multiple && multipleIcon && (
-        <div className={`${itemPrefixCls}-all`}>
-          <MultipleIcon
-            checked={getCheckStatus() === 'all'}
-            indeterminate={getCheckStatus() === 'part'}
-            onChange={onSelectAll}
-          >
-            {selectAllText}
-          </MultipleIcon>
-        </div>
-      )}
-
       <div role="listbox" id={`${id}_list`} style={{ height: 0, width: 0, overflow: 'hidden' }}>
         {renderItem(activeIndex - 1)}
         {renderItem(activeIndex)}
         {renderItem(activeIndex + 1)}
       </div>
+
+      {multiple && !searchValue && selectAllIcon && (
+        <div
+          className={classNames(itemPrefixCls, `${itemPrefixCls}-all`, `${itemPrefixCls}-option`, {
+            [`${itemPrefixCls}-option-selected`]: getCheckStatus() !== 'none',
+          })}
+          onMouseDown={onListMouseDown}
+          onClick={onSelectValueAll}
+        >
+          <SelectAllIcon
+            checked={getCheckStatus() === 'all'}
+            indeterminate={getCheckStatus() === 'part'}
+          >
+            {selectAllText}
+          </SelectAllIcon>
+        </div>
+      )}
       <List<SelectFlattenOptionData>
         itemKey="key"
         ref={listRef}
@@ -346,7 +360,6 @@ const OptionList: React.ForwardRefRenderFunction<
       >
         {({ group, groupOption, data, label, value }, itemIndex) => {
           const { key } = data;
-          const node = document.getElementById(`content-${itemIndex}`);
 
           // Group
           if (group) {
@@ -387,14 +400,13 @@ const OptionList: React.ForwardRefRenderFunction<
           }
 
           // 搜索词突出
-          if (searchValue && node) {
-            const reg = new RegExp(searchValue, 'gi');
-            const strings = node.innerText.replace(
-              reg,
-              `<span class='${optionPrefixCls}-content-bold'>$&</span>`,
+          requestAnimationFrame(() => {
+            highlightSearch(
+              `content-${itemIndex}-${randomRef.current}`,
+              searchValue,
+              optionPrefixCls,
             );
-            node.innerHTML = strings;
-          }
+          });
 
           return (
             <div
@@ -415,12 +427,15 @@ const OptionList: React.ForwardRefRenderFunction<
               }}
               style={style}
             >
-              {multiple && multipleIcon && (
+              {multiple && selectAllIcon && (
                 <span className={`${itemPrefixCls}-option-state-multiple`}>
-                  <MultipleIcon checked={selected} />
+                  <SelectAllIcon checked={selected} />
                 </span>
               )}
-              <div id={`content-${itemIndex}`} className={`${optionPrefixCls}-content`}>
+              <div
+                id={`content-${itemIndex}-${randomRef.current}`}
+                className={`${optionPrefixCls}-content`}
+              >
                 {content}
               </div>
               {React.isValidElement(menuItemSelectedIcon) || selected}

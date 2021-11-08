@@ -80,7 +80,7 @@ export function toOuterValues<FOT extends FlattenOptionsType>(
 
 export function removeLastEnabledValue<
   T extends { disabled?: boolean },
-  P extends RawValueType | object
+  P extends RawValueType | object,
 >(measureValues: T[], values: P[]): { values: P[]; removedValue: P } {
   const newValues = [...values];
 
@@ -126,3 +126,16 @@ export function getUUID(): number | string {
 
   return retId;
 }
+
+export const highlightSearch = (id: string, searchValue: string, prefixCls: string) => {
+  const node = document.getElementById(id);
+  if (node) {
+    let strings = node.innerText;
+
+    if (searchValue) {
+      const reg = new RegExp(searchValue, 'gi');
+      strings = node.innerText.replace(reg, `<span class='${prefixCls}-content-bold'>$&</span>`);
+    }
+    node.innerHTML = strings;
+  }
+};
