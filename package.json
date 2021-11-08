@@ -1,6 +1,6 @@
 {
   "name": "bonree-select",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React Select",
   "engines": {
     "node": ">=8.x"
